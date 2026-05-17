@@ -10,23 +10,24 @@
 
 ## 📌 Table of Contents
 
-1. [Why Governance Needs Persistent Storage](#-why-governance-needs-persistent-storage)
-2. [What You'll Build Today](#-what-youll-build-today)
-3. [The Database Architecture](#-the-database-architecture)
-4. [Step 2.1 — Install Dependencies](#-step-21--install-dependencies)
-5. [Step 2.2 — Database Connection Setup](#-step-22--database-connection-setup)
-6. [Step 2.3 — SQLAlchemy ORM Models](#-step-23--sqlalchemy-orm-models)
-7. [Step 2.4 — Pydantic Schemas (Request/Response)](#-step-24--pydantic-schemas)
-8. [Step 2.5 — Database Migrations with Alembic](#-step-25--database-migrations-with-alembic)
-9. [Step 2.6 — Update Model Registry to Use PostgreSQL](#-step-26--update-model-registry-to-use-postgresql)
-10. [Step 2.7 — Persistent Policy Engine](#-step-27--persistent-policy-engine)
-11. [Step 2.8 — Wiring It All Together](#-step-28--wiring-it-all-together)
-12. [Step 2.9 — Testing with Docker](#-step-29--testing-with-docker)
-13. [What You Built Today](#-what-you-built-today)
-14. [Day 2 Checklist](#-day-2-checklist)
+1. [Why Governance Needs Persistent Storage](#why-storage)
+2. [What You'll Build Today](#what-youll-build)
+3. [The Database Architecture](#database-architecture)
+4. [Step 2.1 — Install Dependencies](#step-21)
+5. [Step 2.2 — Database Connection Setup](#step-22)
+6. [Step 2.3 — SQLAlchemy ORM Models](#step-23)
+7. [Step 2.4 — Pydantic Schemas](#step-24)
+8. [Step 2.5 — Database Migrations with Alembic](#step-25)
+9. [Step 2.6 — Update Model Registry to Use PostgreSQL](#step-26)
+10. [Step 2.7 — Persistent Policy Engine](#step-27)
+11. [Step 2.8 — Wiring It All Together](#step-28)
+12. [Step 2.9 — Testing with Docker](#step-29)
+13. [What You Built Today](#what-you-built)
+14. [Day 2 Checklist](#checklist)
 
 ---
 
+<a id="why-storage"></a>
 ## 💾 Why Governance Needs Persistent Storage
 
 On Day 1, you built a working governance API with in-memory storage. That's fine for learning. In production, it's a disaster waiting to happen.
@@ -58,6 +59,7 @@ Governance Rule #3: Audit logs are write-once. Never delete them.
 
 ---
 
+<a id="what-youll-build"></a>
 ## 🎯 What You'll Build Today
 
 By the end of Day 2, your governance API will:
@@ -81,6 +83,7 @@ AFTER (Day 2):
 
 ---
 
+<a id="database-architecture"></a>
 ## 🗄️ The Database Architecture
 
 Before writing a single line of code, understand the data model. This is your governance database schema:
@@ -134,6 +137,7 @@ Before writing a single line of code, understand the data model. This is your go
 
 ---
 
+<a id="step-21"></a>
 ## ⚙️ Step 2.1 — Install Dependencies
 
 ```bash
@@ -159,6 +163,7 @@ Your `requirements.txt` now has the database stack. Anyone cloning your repo run
 
 ---
 
+<a id="step-22"></a>
 ## ⚙️ Step 2.2 — Database Connection Setup
 
 Create the async database engine. This is the single connection point for your entire app.
@@ -234,6 +239,7 @@ async def close_db():
 
 ---
 
+<a id="step-23"></a>
 ## ⚙️ Step 2.3 — SQLAlchemy ORM Models
 
 These are your Python classes that map to database tables. SQLAlchemy translates them to SQL automatically.
@@ -427,6 +433,7 @@ class AuditEvent(Base):
 
 ---
 
+<a id="step-24"></a>
 ## ⚙️ Step 2.4 — Pydantic Schemas
 
 Pydantic schemas handle request validation and response serialization. Keep them separate from ORM models — they serve different purposes.
@@ -569,6 +576,7 @@ class AuditStats(BaseModel):
 
 ---
 
+<a id="step-25"></a>
 ## ⚙️ Step 2.5 — Database Migrations with Alembic
 
 Alembic tracks schema changes as versioned migration scripts. Every change to your database schema is a migration. You can roll forward and backward. This is how real production systems handle schema evolution.
@@ -721,6 +729,7 @@ def downgrade() -> None:
 
 ---
 
+<a id="step-26"></a>
 ## ⚙️ Step 2.6 — Update Model Registry to Use PostgreSQL
 
 Replace the Day 1 in-memory dict with real database operations.
@@ -891,6 +900,7 @@ async def model_stats(db: AsyncSession = Depends(get_db)):
 
 ---
 
+<a id="step-27"></a>
 ## ⚙️ Step 2.7 — Persistent Policy Engine
 
 The policy engine now loads rules from the database instead of having them hardcoded. This means you can add/remove/modify rules without redeploying code.
@@ -1131,6 +1141,7 @@ async def toggle_rule(rule_id: str, db: AsyncSession = Depends(get_db)):
 
 ---
 
+<a id="step-28"></a>
 ## ⚙️ Step 2.8 — Wiring It All Together
 
 Update `main.py` to initialize the database on startup and seed default rules.
@@ -1197,6 +1208,7 @@ async def root():
 
 ---
 
+<a id="step-29"></a>
 ## ⚙️ Step 2.9 — Testing with Docker
 
 You need PostgreSQL running. The fastest way is Docker:
@@ -1308,6 +1320,7 @@ SELECT * FROM policy_checks; -- See every policy check that ran
 
 ---
 
+<a id="what-you-built"></a>
 ## 🏁 What You Built Today
 
 ```
@@ -1334,6 +1347,7 @@ Day 2 (today):
 
 ---
 
+<a id="checklist"></a>
 ## ✅ Day 2 Checklist
 
 Before moving to Day 3, verify:
